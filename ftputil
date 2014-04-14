@@ -1,0 +1,204 @@
+#/bin/bash
+seedboxHelp() {
+	echo "Seedbox Description: "
+	echo "A shell script to curl ftps to nad102.seedbox.ca, download the contents of /rtorrent/downloads to a designated path - default is Volumes/Mammoth/Downloads \Mammoth"
+	echo ""
+	echo "Usage: seedbox <command>"	
+	echo "Commands:"
+	echo ""
+	echo "get-all - mget all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+	echo ""
+	echo "delete - delete all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+	echo ""
+	echo "view - view all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+}
+CURLFLAGS="--globoff --ssl-reqd -l -s --retry 5"
+USERDIR="/Volumes/Mammoth/Downloads Mammoth/"
+FTPQUALIFIEDURL="ftp://<username>:<password>@nad102.seedstuff.ca:32001/rtorrent/downloads/"
+ROOTCONTENT="curl $CURLFLAGS $FTPQUALIFIEDURL"
+LOCALDIR=""
+
+view() {
+	local count=0
+	while read line
+	do
+		count=$((count+1))	
+		echo "$count - $line"
+	done <<< "$1"
+}
+# TODO - Check if directory exists locally, don't download if it does
+get-all() { # Recursive download
+	local content="$1";
+	while read line
+	do
+		# 
+		if curl $CURLFLAGS "$FTPQUALIFIEDURL$2/$line"/
+		then # This is a directory
+			# echo This is a directory
+			echo "$line is a directory"
+			echo "--------------------"
+			if [ ! -e "$line" ]; then # This file doesn't exist
+				mkdir "$LOCALDIR$line"/
+				( 	
+					local next="$2/$line"
+					cd "$LOCALDIR$line/"; 
+					LOCALDIR="$LOCALDIR$line/"
+					get-all "$(curl $CURLFLAGS "$FTPQUALIFIEDURL$2/$line"/)" "$next" 
+				)
+			else
+				echo $("pwd")/$line already exists. Skipping.
+				echo "--------------------"
+			fi
+		else # This is a file
+			echo "--------------------"
+			echo Downloading "< $line >" to $("pwd")
+			echo "--------------------"
+			curl --globoff --ssl-reqd --retry 5 "$FTPQUALIFIEDURL$2/$line" -O
+		fi
+		echo ""
+	done <<< "$content" 
+}
+
+get-one() {
+	local count=0; local content="$($ROOTCONTENT)";
+	view "$content"
+	# match user input with number
+	read -p "Type a number corresponding to the file number you'd like to download and hit [Enter]: " number 
+	while read line
+	do
+		count=$(( count + 1 ))
+		if [ "$number" -eq "$count" ]; then
+			localFileStructure "$1"
+			get-all "$line" ""
+			echo "Finished download"
+		fi
+	done <<< "$content"
+}
+
+delete-one() {
+	for i in `curl -l "ftp://<username>:<password>@nad102.seedstuff.ca:32001/rtorrent/downloads/"`; do
+		{
+			echo "$i"
+		};
+	done;
+	# local count=0; local content="$($ROOTCONTENT)"; local selection="";
+	# view "$content"
+	# # match user input with number
+	# read -p "Type a number corresponding to the file number you'd like to delete and hit [Enter]: " number
+	# while read line
+	# do
+	# 	count=$(( count + 1 ))
+	# 	if [ "$number" -eq "$count" ]; then
+	# 		echo "Deleting $line from remote directory"
+	# 		selection="$line"
+	# 	fi
+	# done <<< "$content"
+	# echo ----- "$selection" -------
+	# ftp -gni "$FTPQUALIFIEDURL" <<- EOT
+	# binary
+	# delete "$selection"
+	# rmdir "$selection"
+	# bye 
+	# EOT
+}
+
+getCount() {
+	local count=0;
+	local content="$1"
+	while read line
+	do
+		count=$(( count + 1 ))
+	done <<< "$content"
+	echo $count;
+}
+
+localFileStructure() { 	# Logic for creating root directory
+	if [ $1 ]; then
+		if [ -d "$1/" ]; then
+			if [ -d "$1/seedbox.downloads/" ]; then
+				echo "Entering $1/seedbox.downloads/"
+				cd "$1/seedbox.downloads/"
+			else
+				echo "Creating and entering $1/seedbox.downloads/";
+				mkdir "$1/seedbox.downloads/";
+				cd "$1/seedbox.downloads/";
+			fi
+			LOCALDIR="$1/seedbox.downloads/"
+		else
+			echo "ERROR - $1 was not found."
+			exit 1;
+		fi
+	else 
+		# If user defined directory is detected, use it
+		if [ -d "/Volumes/Mammoth/Downloads Mammoth/" ]; then
+			echo "Using /Volumes/Mammoth/Downloads Mammoth/";
+			cd "/Volumes/Mammoth/Downloads Mammoth/";
+			LOCALDIR="/Volumes/Mammoth/Downloads Mammoth/"
+		else 
+			# Else if $HOME/Desktop/ is detected, use this directory
+			if [ -d "$HOME/Desktop/" ]; then
+				if [ -d "$HOME/Desktop/seedbox.downloads/" ]; then
+					echo "Entering $HOME/Desktop/seedbox.downloads/"
+					cd "$HOME/Desktop/seedbox.downloads/"
+					LOCALDIR="$HOME/Desktop/seedbox.downloads/"
+				else
+					echo "Creating and entering $HOME/Desktop/seedbox.downloads/";
+					mkdir "$HOME/Desktop/seedbox.downloads/";
+					cd "$HOME/Desktop/seedbox.downloads/";
+					LOCALDIR="$HOME/Desktop/seedbox.downloads/"
+				fi
+				# $LOCALDIR="$HOME/Desktop/seedbox.downloads/"
+			else
+				# Else if $HOME is found, use this directory
+				if [ -d "$HOME" ]; then
+					if [ -d "$HOME/seedbox.downloads/" ]; then
+						echo "Entering $HOME/seedbox.downloads/"
+						cd "$HOME/seedbox.downloads/"
+						LOCALDIR="$HOME/seedbox.downloads/"
+					else	
+						echo "Creating $HOME/seedbox.downloads/";
+						mkdir "$HOME/seedbox.downloads/";
+						cd "$HOME/seedbox.downloads/";
+						LOCALDIR="$HOME/seedbox.downloads/"	
+					fi
+				else
+					echo "Could not create or find a local directory to use";
+					exit 1;
+				fi
+			fi
+		fi
+	fi
+}
+
+if [ $1 ]
+then
+	case "$1" in
+		view)
+			echo "Fetching contents..."
+			view "$($ROOTCONTENT)"
+		;;
+		get-all) 
+			# If user supplies a valid directory, use it
+			localFileStructure "$2"
+ 			content="$($ROOTCONTENT)"
+			echo ""
+			echo "Downloading $(getCount "$content") items from $FTPQUALIFIEDURL to $LOCALDIR"
+			echo ""
+			get-all "$content" "";
+			echo "Finished downloading content"
+		;;
+		get-one)
+			echo "Fetching contents..."
+			get-one "$2"
+		;;
+		delete-one)
+			echo "Fetching contents..."
+			delete-one
+		;;
+		*)
+			seedboxHelp
+		;;
+	esac
+else
+	seedboxHelp
+fi
