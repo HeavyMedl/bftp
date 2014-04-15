@@ -1,20 +1,21 @@
 #/bin/bash
-seedboxHelp() {
-	echo "Seedbox Description: "
-	echo "A shell script to curl ftps to nad102.seedbox.ca, download the contents of /rtorrent/downloads to a designated path - default is Volumes/Mammoth/Downloads \Mammoth"
+ftputilHelp() {
+	echo "ftputil Description: "
+	echo "A shell script to curl ftps to a remote server, download the contents of a user defined to a designated path"
 	echo ""
-	echo "Usage: seedbox <command>"	
+	echo "Usage: ftputil <command>"	
 	echo "Commands:"
 	echo ""
-	echo "get-all - mget all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+	echo "get-all - recursively get all files/directories from ftp://<host>:<port>/<path>/"
 	echo ""
-	echo "delete - delete all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+	echo "delete - delete all files/directories from ftp://<host>:<port>/<path>/"
 	echo ""
-	echo "view - view all files/directories from ftp://nad102.seedstuff.ca:32001/rtorrent/downloads/"
+	echo "view - view all files/directories from ftp://<host>:<port>/<path>/"
 }
-CURLFLAGS="--globoff --ssl-reqd -l -s --retry 5"
+
 USERDIR="/Volumes/Mammoth/Downloads Mammoth/"
 FTPQUALIFIEDURL="ftp://<username>:<password>@nad102.seedstuff.ca:32001/rtorrent/downloads/"
+CURLFLAGS="--globoff --ssl-reqd -l -s --retry 5"
 ROOTCONTENT="curl $CURLFLAGS $FTPQUALIFIEDURL"
 LOCALDIR=""
 
@@ -26,7 +27,7 @@ view() {
 		echo "$count - $line"
 	done <<< "$1"
 }
-# TODO - Check if directory exists locally, don't download if it does
+
 get-all() { # Recursive download
 	local content="$1";
 	while read line
@@ -115,51 +116,50 @@ getCount() {
 localFileStructure() { 	# Logic for creating root directory
 	if [ $1 ]; then
 		if [ -d "$1/" ]; then
-			if [ -d "$1/seedbox.downloads/" ]; then
-				echo "Entering $1/seedbox.downloads/"
-				cd "$1/seedbox.downloads/"
+			if [ -d "$1/ftputil.downloads/" ]; then
+				echo "Entering $1/ftputil.downloads/"
+				cd "$1/ftputil.downloads/"
 			else
-				echo "Creating and entering $1/seedbox.downloads/";
-				mkdir "$1/seedbox.downloads/";
-				cd "$1/seedbox.downloads/";
+				echo "Creating and entering $1/ftputil.downloads/";
+				mkdir "$1/ftputil.downloads/";
+				cd "$1/ftputil.downloads/";
 			fi
-			LOCALDIR="$1/seedbox.downloads/"
+			LOCALDIR="$1/ftputil.downloads/"
 		else
 			echo "ERROR - $1 was not found."
 			exit 1;
 		fi
 	else 
 		# If user defined directory is detected, use it
-		if [ -d "/Volumes/Mammoth/Downloads Mammoth/" ]; then
-			echo "Using /Volumes/Mammoth/Downloads Mammoth/";
-			cd "/Volumes/Mammoth/Downloads Mammoth/";
-			LOCALDIR="/Volumes/Mammoth/Downloads Mammoth/"
+		if [ -d "$USERDIR" ]; then
+			echo "Using $USERDIR";
+			cd "$USERDIR";
+			LOCALDIR="$USERDIR"
 		else 
 			# Else if $HOME/Desktop/ is detected, use this directory
 			if [ -d "$HOME/Desktop/" ]; then
-				if [ -d "$HOME/Desktop/seedbox.downloads/" ]; then
-					echo "Entering $HOME/Desktop/seedbox.downloads/"
-					cd "$HOME/Desktop/seedbox.downloads/"
-					LOCALDIR="$HOME/Desktop/seedbox.downloads/"
+				if [ -d "$HOME/Desktop/ftputil.downloads/" ]; then
+					echo "Entering $HOME/Desktop/ftputil.downloads/"
+					cd "$HOME/Desktop/ftputil.downloads/"
+					LOCALDIR="$HOME/Desktop/ftputil.downloads/"
 				else
-					echo "Creating and entering $HOME/Desktop/seedbox.downloads/";
-					mkdir "$HOME/Desktop/seedbox.downloads/";
-					cd "$HOME/Desktop/seedbox.downloads/";
-					LOCALDIR="$HOME/Desktop/seedbox.downloads/"
+					echo "Creating and entering $HOME/Desktop/ftputil.downloads/";
+					mkdir "$HOME/Desktop/ftputil.downloads/";
+					cd "$HOME/Desktop/ftputil.downloads/";
+					LOCALDIR="$HOME/Desktop/ftputil.downloads/"
 				fi
-				# $LOCALDIR="$HOME/Desktop/seedbox.downloads/"
 			else
 				# Else if $HOME is found, use this directory
 				if [ -d "$HOME" ]; then
-					if [ -d "$HOME/seedbox.downloads/" ]; then
-						echo "Entering $HOME/seedbox.downloads/"
-						cd "$HOME/seedbox.downloads/"
-						LOCALDIR="$HOME/seedbox.downloads/"
+					if [ -d "$HOME/ftputil.downloads/" ]; then
+						echo "Entering $HOME/ftputil.downloads/"
+						cd "$HOME/ftputil.downloads/"
+						LOCALDIR="$HOME/ftputil.downloads/"
 					else	
-						echo "Creating $HOME/seedbox.downloads/";
-						mkdir "$HOME/seedbox.downloads/";
-						cd "$HOME/seedbox.downloads/";
-						LOCALDIR="$HOME/seedbox.downloads/"	
+						echo "Creating $HOME/ftputil.downloads/";
+						mkdir "$HOME/ftputil.downloads/";
+						cd "$HOME/ftputil.downloads/";
+						LOCALDIR="$HOME/ftputil.downloads/"	
 					fi
 				else
 					echo "Could not create or find a local directory to use";
@@ -196,9 +196,9 @@ then
 			delete-one
 		;;
 		*)
-			seedboxHelp
+			ftputilHelp
 		;;
 	esac
 else
-	seedboxHelp
+	ftputilHelp
 fi
