@@ -9,19 +9,24 @@ The motivation behind bftp was to learn bash programming.  When I started using 
 #### Features
 - **FTPES** - Because bftp wraps cURL, we can utilize its robust features.  Bftp becomes a **Explicit FTP over SSL (FTPES)** client by using cURL's `--ssl-reqd` flag.  This flag requires SSL/TLS for the connection. The connection terminates without it.  This means the data stream transfer is encrypted!
 
-- **Mirror files and directories** - Bftp recursively creates a local file structure that *mirrors* your remote file structure.  Meaning if you execute a bftp command to get remote files, bftp prefixes a namespace and replicates the file structure on your ftp server.
-> hostname.com:port/**root/myfiles/[foo.txt, bar.txt]**
+- **Mirror files and directories** - Bftp recursively creates a local file structure that *mirrors* your remote file structure.  Meaning if you execute a bftp command to get remote files, bftp prefixes a namespace and replicates the file structure from your ftp server to your local.
+ 
+	`hostname.com:port/**root/myfiles/[foo.txt, bar.txt]**`
 
-  becomes
-  
-  > $HOME/Desktop/**bftp.downloads/root/myfiles/[foo.txt, bar.txt]**
+	becomes
+
+	`$HOME/Desktop/**bftp.downloads/root/myfiles/[foo.txt, bar.txt]**`
+
+	> **Note**:
+
+	> If a default directory is specified in your configuration, bftp does not create a namespace in that directory, it simply mirrors your remote files into that directory.
   
 - **Automate** - Modify `crontab` or a job scheduler to utilize bftp as means of getting all of your remote files using `$ bftp get-all`. OR keeping in the spirit of wrapping shell executables, wrap bftp in your own process.
 
 - **Operations** - *some operations are still in development*
-  - Get single or multiple remote files/directories to local  - **functional**
-  - Put single or multiple local files/directories to remote  - **in development**
-  - Delete single or multiple remote files/directores         - **in development**
+  - Get single or multiple remote files/directories to local  **functional**
+  - Put single or multiple local files/directories to remote  **in development**
+  - Delete single or multiple remote files/directores         **in development**
 
 =====
 #### Setup
