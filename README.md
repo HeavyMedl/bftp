@@ -1,5 +1,5 @@
 # bftp 
-A bash script with ftp mirroring functionality that wraps cURL as a platform for **Explicit FTP over SSL (FTPES)**. A command line ftp client.
+A command line **Explicit FTP over SSL (FTPES)** tool that wraps cURL as a platform for mirroring remote files locally.
 
 ------
 #### Purpose
@@ -75,7 +75,7 @@ $ sudo vim /etc/paths
 Now everytime you restart your terminal, your new path will be defined in your `$PATH` variable.
 
 ##### Configuration
-Now that you have the script ready to run, you need to set endpoints to your ftp server.  By default, the endpoints have place holders in them because you're not allowed to access my seedbox :P Let's configure bftp to use your ftp server.  Identify the root folder where your files reside.  In my seedbox, my root folder is `/rtorrent/downloads`.  We're using the ftp protocol in cURL, so our fully qualified endpoint would be something like this:
+Now that you have the script ready to run, you need to set endpoints to your ftp server.  By default, the endpoints have place holders in them because you're not allowed to access my seedbox :P Let's configure bftp to use your ftp server.  Identify the root folder where your files reside.  In my seedbox, my root folder is `/rtorrent/downloads/`.  We're using the ftp protocol in cURL, so our fully qualified endpoint would be something like this:
 
 `ftp://user:password@nad.seedstuff.ca:9999/rtorrent/downloads/`
 
