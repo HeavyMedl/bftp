@@ -1,5 +1,5 @@
 # bftp 
-A command line **Explicit FTP over SSL (FTPES)** tool that wraps cURL as a platform for mirroring remote files locally.
+A command line **Explicit FTP over SSL (FTPES)** cURL wrapper that mirrors remote files locally. 
 
 ------
 #### Purpose
