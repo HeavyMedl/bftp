@@ -12,7 +12,7 @@ The motivation behind bftp was to learn bash programming.  When I started using 
 - **Mirror files and directories** - Bftp recursively creates a local file structure that *mirrors* your remote file structure.  Meaning if you execute a bftp command to get remote files, bftp prefixes a namespace and replicates the file structure from your ftp server to your local.
  
 	`hostname.com:port/root/myfiles/[foo.txt, bar.txt]`
-
+k
 	becomes
 
 	`$HOME/Desktop/bftp.downloads/root/myfiles/[foo.txt, bar.txt]`
@@ -40,7 +40,7 @@ $ cd /usr/local/bin/ && vim bftp # paste script in this file
 
 Or use the git route and clone the repository with this command
 ```bash
-$ git clone https://github.com/kurtmedley/bftp.git
+$ git clone https://github.com/kurtquake/bftp.git
 ```
 
 ##### Dependencies
