@@ -14,7 +14,7 @@ bftpHelp() {
 }
 
 USERDIR="/Volumes/Mammoth/Downloads Mammoth/"
-FTPQUALIFIEDURL="ftp://<username>:<password>@nad102.seedstuff.ca:32001/rtorrent/downloads/"
+FTPQUALIFIEDURL="ftp://<user>:<password>@nad102.seedstuff.ca:32001/rtorrent/downloads/"
 CURLFLAGS="--globoff --ssl-reqd -l -s --retry 5"
 ROOTCONTENT="curl $CURLFLAGS $FTPQUALIFIEDURL"
 LOCALDIR=""
