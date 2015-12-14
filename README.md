@@ -1,9 +1,9 @@
 # bftp 
-<<<<<<< HEAD
+
 A bash script with ftp mirroring functionality that wraps cURL as a platform for **Explicit FTP over SSL (FTPES)**. A command line ftp client.
 =======
 A command line **Explicit FTP over SSL (FTPES)** cURL wrapper that mirrors remote files locally. 
->>>>>>> 032d41ec9a0c3e488188c8ea4d39102a294b6d45
+
 
 ------
 #### Purpose
@@ -15,7 +15,7 @@ The motivation behind bftp was to learn bash programming.  When I started using 
 
 - **Mirror files and directories** - Bftp recursively creates a local file structure that *mirrors* your remote file structure.  Meaning if you execute a bftp command to get remote files, bftp prefixes a namespace and replicates the file structure from your ftp server to your local.
  
-<<<<<<< HEAD
+
 	`hostname.com:port/**root/myfiles/[foo.txt, bar.txt]**`
 
 	becomes
@@ -27,7 +27,7 @@ k
 	becomes
 
 	`$HOME/Desktop/bftp.downloads/root/myfiles/[foo.txt, bar.txt]`
->>>>>>> 032d41ec9a0c3e488188c8ea4d39102a294b6d45
+
 
 	> **Note**:
 
@@ -46,20 +46,20 @@ Since this is literally just a bash script, you are welcome to simply create a n
 ```bash
 $ cd /usr/local/bin/ && vim bftp # paste script in this file
 ```
-<<<<<<< HEAD
+
 =======
 > **Note:**
 
->>>>>>> 032d41ec9a0c3e488188c8ea4d39102a294b6d45
+
 > If you manually copy/paste the script, you'll need to `chmod -x bftp` to make the script executable.
 
 Or use the git route and clone the repository with this command
 ```bash
-<<<<<<< HEAD
+
 $ git clone https://github.com/kurtmedley/bftp.git
 =======
 $ git clone https://github.com/kurtquake/bftp.git
->>>>>>> 032d41ec9a0c3e488188c8ea4d39102a294b6d45
+
 ```
 
 ##### Dependencies
@@ -94,7 +94,7 @@ $ sudo vim /etc/paths
 Now everytime you restart your terminal, your new path will be defined in your `$PATH` variable.
 
 ##### Configuration
-<<<<<<< HEAD
+
 Now that you have the script ready to run, you need to set endpoints to your ftpserver.  By default, the endpoints have place holders in them
 =======
 Now that you have the script ready to run, you need to set endpoints to your ftp server.  By default, the endpoints have place holders in them because you're not allowed to access my seedbox :P Let's configure bftp to use your ftp server.  Identify the root folder where your files reside.  In my seedbox, my root folder is `/rtorrent/downloads/`.  We're using the ftp protocol in cURL, so our fully qualified endpoint would be something like this:
@@ -261,4 +261,4 @@ Done! Now you can run `bftp` from your command line.  Read on for a command list
 	> **Note**:
 
 	> `USERDIR` may be defined, but the file path you pass as a parameter takes precedent.  bftp then creates a namespace directory inside your designated path called `bftp.downloads`.
->>>>>>> 032d41ec9a0c3e488188c8ea4d39102a294b6d45
+
