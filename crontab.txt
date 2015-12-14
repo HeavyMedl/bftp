@@ -1,0 +1,6 @@
+PATH=/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/Users/kurtmedley/bin/bftp
+
+*/15 * * * * bftp get-em tv >> /Users/kurtmedley/Desktop/.wbftp-logs/wbftp.tv.log
+*/15 * * * * bftp get-em >> /Users/kurtmedley/Desktop/.wbftp-logs/wbftp.movies.log
+*/15 * * * * bftp get-em fights >> /Users/kurtmedley/Desktop/.wbftp-logs/wbftp.fights.log
+0 * * * * rm /Users/kurtmedley/Desktop/.wbftp-logs/*
